@@ -5,6 +5,8 @@ import org.testng.annotations.Test;
 import app.support.ExcelPropertyLoader;
 import app.support.Keywords;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -22,7 +24,7 @@ import org.testng.annotations.AfterClass;
 public class TSD_Cart {
 	public String baseUrl = "https://demosite.appvance.com/";
 	String driverPath = "C:\\Academia2206\\libs\\webdrivers\\chromedriver-102.0.5.exe";
-	String excelPath = "C:\\Academia2206\\libs\\demosite_data.xlsx";
+	String excelPath = "C:\\Academia2206\\libs\\demosite_parameters.xlsx";
 	public WebDriver driver;
 	ExcelPropertyLoader excelData;
 
@@ -48,13 +50,14 @@ public class TSD_Cart {
 		}
 	}
 
+	@Parameters({ "email", "password", "confirmPassword" })
 	@Test(description = "Create new account and address", priority = 3)
-	public void createNewAccount() {
+	public void createNewAccount(@Optional("emailtest@domain.com") String email, @Optional("Demo1234") String password,
+			@Optional("Demo1234") String confirmPassword) {
 		try {
-			Keywords.writeElement(driver, By.id("spree_user_email"), excelData.getValue("spree_user_email"));
-			Keywords.writeElement(driver, By.id("spree_user_password"), excelData.getValue("spree_user_password"));
-			Keywords.writeElement(driver, By.id("spree_user_password_confirmation"),
-					excelData.getValue("spree_user_password_confirmation"));
+			Keywords.writeElement(driver, By.id("spree_user_email"), email);
+			Keywords.writeElement(driver, By.id("spree_user_password"), password);
+			Keywords.writeElement(driver, By.id("spree_user_password_confirmation"), confirmPassword);
 			Keywords.clickElement(driver, By.name("commit"));
 			String expectedMessage = "Welcome! You have signed up successfully.";
 			String actualMessage = Keywords.getText(driver, By.xpath("//div[@class='alert alert-notice']"));
@@ -64,23 +67,19 @@ public class TSD_Cart {
 		}
 	}
 
+	@Parameters({ "firstName", "lastName", "address1", "city", "zipCode", "phone", "stateId" })
 	@Test(description = "Fill address", priority = 4, dependsOnMethods = "createNewAccount")
-	public void fillAddress() {
+	public void fillAddress(@Optional("firstName") String firstName, @Optional("lastName") String lastName,
+			@Optional("address1") String address1, @Optional("city") String city, @Optional("11000") String zipCode,
+			@Optional("12345678") String phone, @Optional("3524") String stateId) {
 		try {
-			Keywords.writeElement(driver, By.id("order_bill_address_attributes_firstname"),
-					excelData.getValue("order_bill_address_attributes_firstname"));
-			Keywords.writeElement(driver, By.id("order_bill_address_attributes_lastname"),
-					excelData.getValue("order_bill_address_attributes_lastname"));
-			Keywords.writeElement(driver, By.id("order_bill_address_attributes_address1"),
-					excelData.getValue("order_bill_address_attributes_address1"));
-			Keywords.writeElement(driver, By.id("order_bill_address_attributes_city"),
-					excelData.getValue("order_bill_address_attributes_city"));
-			Keywords.writeElement(driver, By.id("order_bill_address_attributes_zipcode"),
-					excelData.getValue("order_bill_address_attributes_zipcode"));
-			Keywords.writeElement(driver, By.id("order_bill_address_attributes_phone"),
-					excelData.getValue("order_bill_address_attributes_phone"));
-			Keywords.selectElement(driver, By.id("order_bill_address_attributes_state_id"),
-					excelData.getValue("order_bill_address_attributes_state_id"));
+			Keywords.writeElement(driver, By.id("order_bill_address_attributes_firstname"), firstName);
+			Keywords.writeElement(driver, By.id("order_bill_address_attributes_lastname"), lastName);
+			Keywords.writeElement(driver, By.id("order_bill_address_attributes_address1"), address1);
+			Keywords.writeElement(driver, By.id("order_bill_address_attributes_city"), city);
+			Keywords.writeElement(driver, By.id("order_bill_address_attributes_zipcode"), zipCode);
+			Keywords.writeElement(driver, By.id("order_bill_address_attributes_phone"), phone);
+			Keywords.selectElement(driver, By.id("order_bill_address_attributes_state_id"), stateId);
 			Keywords.clickElement(driver, By.name("commit"));
 		} catch (Exception e) {
 			Assert.fail("Error Filling Address - " + e.getMessage());
@@ -144,12 +143,14 @@ public class TSD_Cart {
 
 	@BeforeClass
 	public void beforeClass() {
-		System.setProperty("webdriver.chrome.driver", driverPath);
-		driver = new ChromeDriver();
-		driver.get(baseUrl);
 		// Load test data required
 		excelData = new ExcelPropertyLoader();
 		excelData.LoadFile(excelPath);
+		baseUrl = excelData.getValue("baseUrl");
+		driverPath = excelData.getValue("driverPath");
+		System.setProperty("webdriver.chrome.driver", driverPath);
+		driver = new ChromeDriver();
+		driver.get(baseUrl);
 	}
 
 	@AfterClass
