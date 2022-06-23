@@ -14,6 +14,7 @@ public class Page_Navbar extends PageTemplate {
 	private String xpathSearchInput = "//input[@name='keywords']";
 	private String xpathSearchButton = "//input[@type='submit' and @value='Search']";
 	private String xpathTypeSearchSelect = "//select[@name='taxon']";
+	private String xpathCart = "//li[@id='link-to-cart']/a";
 	public static final String URL = "https://demosite.appvance.com/"; // We can access to this from excel file or from here
 
 	public Page_Navbar(WebDriver driver) {
@@ -32,12 +33,18 @@ public class Page_Navbar extends PageTemplate {
 		Keywords.clickElement(driver, By.xpath(xpathLogoHome));
 	}
 	
+	public void goToCart() {
+		Keywords.clickElement(driver, By.xpath(xpathCart));
+	}
+	
 	public void searchByText(String text) {
+		Keywords.clearSelect(driver, By.xpath(xpathTypeSearchSelect));
 		Keywords.writeElement(driver, By.xpath(xpathSearchInput), text);
 		Keywords.clickElement(driver, By.xpath(xpathSearchButton));
 	}
 	
 	public void searchByType(String value) {
+		Keywords.clearElement(driver, By.xpath(xpathSearchInput));
 		Keywords.selectElement(driver, By.xpath(xpathTypeSearchSelect), value);
 		Keywords.clickElement(driver, By.xpath(xpathSearchButton));
 	}
