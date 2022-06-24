@@ -20,6 +20,16 @@ public class Keywords {
 		element.click();
 	}
 	
+	public static void clearElement(WebDriver driver, By by) {
+		WebElement element = driver.findElement(by);
+		element.clear();
+	}
+	
+	public static void clearSelect(WebDriver driver, By by) {
+		Select element = new Select(driver.findElement(by));
+		element.selectByValue("");
+	}
+	
 	public static String getText(WebDriver driver, By by) {
 		WebDriverWait wait = new WebDriverWait(driver, 10);
 		WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
