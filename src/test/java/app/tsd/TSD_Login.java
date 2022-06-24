@@ -1,4 +1,5 @@
 package app.tsd;
+
 /**
  * Copyright: Softtek. Description: In this file contains a basic test case of
  * demosite application especifally the login part.
@@ -6,7 +7,6 @@ package app.tsd;
  * @author Bernardo Salinas Jaquez<b.salinas>
  *
  */
-
 
 import org.testng.annotations.Test;
 
@@ -40,54 +40,57 @@ public class TSD_Login {
 	String excelPath = "C:\\Academia2206\\libs\\demosite_parameters.xlsx";
 	String dataPath = "";
 	String sheetData = "";
-	private String xpathLoginAlert="//div[contains(@class,'alert')]";
+	private String xpathLoginAlert = "//div[contains(@class,'alert')]";
 	public WebDriver driver;
 	ExcelPropertyLoader excelData;
-	
-	@DataProvider(name ="excel-data")
-  	public Object[][] excelDP() throws IOException{
-        	//We are creating an object from the excel sheet data by calling a method that reads data from the excel stored locally in our system
-        	Object[][] userObject = getExcelData(dataPath,sheetData);
-        	return userObject;
-  	}
-	
-	public String[][] getExcelData(String fileName, String sheetName){
-    	
-    	String[][] data = null;   	
-	  	try
-	  	{
-	   	FileInputStream fis = new FileInputStream(fileName);
-	   	XSSFWorkbook wb = new XSSFWorkbook(fis);
-	   	XSSFSheet sh = wb.getSheet(sheetName);
-	   	XSSFRow row = sh.getRow(0);
-	   	int noOfRows = 6;
-	   	int noOfCols = 2;
-	   	Cell cell;
-	   	data = new String[noOfRows-1][noOfCols];
-	   	for(int i =1; i<noOfRows;i++){
-		     for(int j=0;j<noOfCols;j++){
-		    	   row = sh.getRow(i);
-		    	   cell= row.getCell(j);
-		    	   data[i-1][j] = cell.getStringCellValue().toString();
-	   	 	   }
-	   	}
-	  	}
-	  	catch (Exception e) {
-	     	   System.out.println("The exception is: " +e.getMessage());
-	     	           	}
-    	return data;
+
+	@DataProvider(name = "excel-data")
+	public Object[][] excelDP() throws IOException {
+		// We are creating an object from the excel sheet data by calling a method that
+		// reads data from the excel stored locally in our system
+		Object[][] userObject = getExcelData(dataPath, sheetData);
+		return userObject;
 	}
-	
-	@Test(dataProvider ="excel-data",description = "Log in the user", priority = 1)
-	public void logInUser(String email,String password) {
+
+	public String[][] getExcelData(String fileName, String sheetName) {
+
+		String[][] data = null;
+		try {
+			FileInputStream fis = new FileInputStream(fileName);
+			XSSFWorkbook wb = new XSSFWorkbook(fis);
+			XSSFSheet sh = wb.getSheet(sheetName);
+			XSSFRow row = sh.getRow(0);
+			int noOfRows = 6;
+			int noOfCols = 2;
+			Cell cell;
+			data = new String[noOfRows - 1][noOfCols];
+			for (int i = 1; i < noOfRows; i++) {
+				for (int j = 0; j < noOfCols; j++) {
+					row = sh.getRow(i);
+					cell = row.getCell(j);
+					data[i - 1][j] = cell.getStringCellValue().toString();
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("The exception is: " + e.getMessage());
+		}
+		return data;
+	}
+
+	@Test(dataProvider = "excel-data", description = "Log in the user", priority = 1)
+	public void logInUser(String email, String password) {
 		System.out.println("Test Case Log in the user");
-		Page_Login newLogin=new Page_Login(driver);
-		driver.get(newLogin.URL);
-		newLogin.logInUser(email, password, false);
-		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-		Assert.assertEquals(Keywords.getText(driver, By.xpath(xpathLoginAlert)),"Logged in successfully");
+		try {
+			Page_Login newLogin = new Page_Login(driver);
+			driver.get(newLogin.URL);
+			newLogin.logInUser(email, password, false);
+			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+			Assert.assertEquals(Keywords.getText(driver, By.xpath(xpathLoginAlert)), "Logged in successfully");
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
 	}
-	
+
 	@BeforeClass
 	public void beforeClass() {
 		// Load test data required
