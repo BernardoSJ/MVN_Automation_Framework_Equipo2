@@ -3,13 +3,13 @@
 <suite name="Failed suite [Default suite]" guice-stage="DEVELOPMENT">
   <test thread-count="5" name="Default test(failed)">
     <classes>
-      <class name="app.tsd.TSD_CreateAccount">
+      <class name="app.tsd.TSD_Login">
         <methods>
-          <include name="afterClass"/>
-          <include name="logInUser"/>
           <include name="beforeClass"/>
+          <include name="afterClass"/>
+          <include name="logInUser" invocation-numbers="0 1 2 3 4"/>
         </methods>
-      </class> <!-- app.tsd.TSD_CreateAccount -->
+      </class> <!-- app.tsd.TSD_Login -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->
